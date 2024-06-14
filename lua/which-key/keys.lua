@@ -167,14 +167,20 @@ function M.get_mappings(mode, prefix_i, buf)
     end
     local ag = a.group and 1 or 0
     local bg = b.group and 1 or 0
-    local ak = (a.key or ""):lower()
-    local bk = (b.key or ""):lower()
-    local aw = ak:match("[a-z]") and 1 or 0
-    local bw = bk:match("[a-z]") and 1 or 0
+    local ak = (a.key or ""):gsub("<?(.-)>?", "%1"):lower()
+    local bk = (b.key or ""):gsub("<?(.-)>?", "%1"):lower()
+    local ab = ak:gsub("^.+%-", "")
+    local bb = bk:gsub("^.+%-", "")
+    local as = not ab:match("[a-z][a-z]") and 1 or 0
+    local bs = not bb:match("[a-z][a-z]") and 1 or 0
+    local aw = not ab:match("[^a-z]") and 1 or 0
+    local bw = not bb:match("[^a-z]") and 1 or 0
+    local _, am = ak:gsub("%-", "")
+    local _, bm = bk:gsub("%-", "")
     local ac = (a.key or ""):match("[a-z]") and 1 or 0
     local bc = (b.key or ""):match("[a-z]") and 1 or 0
-    local asort = ag .. aw .. ak .. ac
-    local bsort = bg .. bw .. bk .. bc
+    local asort = ag .. as .. aw .. ab .. (3 - am) .. ac
+    local bsort = bg .. bs .. bw .. bb .. (3 - bm) .. bc
     return asort < bsort
   end)
   ret.mappings = tmp
