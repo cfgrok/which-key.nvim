@@ -165,18 +165,17 @@ function M.get_mappings(mode, prefix_i, buf)
     if a.order and b.order then
       return a.order < b.order
     end
-    if a.group == b.group then
-      local ak = (a.key or ""):lower()
-      local bk = (b.key or ""):lower()
-      local aw = ak:match("[a-z]") and 1 or 0
-      local bw = bk:match("[a-z]") and 1 or 0
-      if aw == bw then
-        return ak < bk
-      end
-      return aw < bw
-    else
-      return (a.group and 1 or 0) < (b.group and 1 or 0)
-    end
+    local ag = a.group and 1 or 0
+    local bg = b.group and 1 or 0
+    local ak = (a.key or ""):lower()
+    local bk = (b.key or ""):lower()
+    local aw = ak:match("[a-z]") and 1 or 0
+    local bw = bk:match("[a-z]") and 1 or 0
+    local ac = (a.key or ""):match("[a-z]") and 1 or 0
+    local bc = (b.key or ""):match("[a-z]") and 1 or 0
+    local asort = ag .. aw .. ak .. ac
+    local bsort = bg .. bw .. bk .. bc
+    return asort < bsort
   end)
   ret.mappings = tmp
 
